@@ -67,7 +67,7 @@ class OpenWeatherMapWrapper {
      *
      * @return JSON object
      */
-    public function search_city_by_name($name, $cnt = 1, $type = 'accurtate', $mode = 'json', $units = 'internal') {
+    public function search_city_by_name($name, $cnt = 1, $type = 'like', $mode = 'json', $units = 'internal') {
         // build req header
         $header = array();
         if (!is_null($this->key)) {
