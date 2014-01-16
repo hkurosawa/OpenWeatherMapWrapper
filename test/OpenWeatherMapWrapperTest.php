@@ -28,7 +28,7 @@ class OpenWeatherMapWrapperTest extends PHPUnit_Framework_TestCase {
     
     public function test_search_city_by_coord () {
         $count = 5;
-        $result = $this->owm->search_city_by_coord(135.77182, 35.004487, $count);
+        $result = $this->owm->search_city_by_coord(135.77182, 35.004487, $count); //kyoto
         $this->assertLessThanOrEqual($count, $result->{'count'});
     }
     
@@ -39,7 +39,7 @@ class OpenWeatherMapWrapperTest extends PHPUnit_Framework_TestCase {
     }
     
     public function test_search_current_weather_by_cood () {
-        $result = $this->owm->search_current_weather_by_cood(135.77182, 35.004487);
+        $result = $this->owm->search_current_weather_by_cood(135.77182, 35.004487); //kyoto
         $this->assertGreaterThanOrEqual(1, count($result->{'weather'}));
     }
     

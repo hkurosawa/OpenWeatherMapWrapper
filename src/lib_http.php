@@ -17,6 +17,19 @@ function post_http_request ($url, $header, $data) {
 }
 
 function get_http_request ($url, $header, $data) {
+    $url = $url . '?' . http_build_query($data);
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if( $response === FALSE ) {
+        return null;
+    } else {
+        return $response;    
+    }
+    /*
     $options = array('http' =>
         array(
             'method' => 'GET',
@@ -31,13 +44,29 @@ function get_http_request ($url, $header, $data) {
     } else {
         return $contents;        
     }
+     * 
+     */
 }
 
 function put_http_request ($url, $header, $data) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if( $response === FALSE ) {
+        return null;
+    } else {
+        return $response;    
+    }
+    /*
     $options = array("http"=>array(
         'method'    =>  'PUT',
         'header'    =>  implode("\r\n",$header),
-        'content'   =>  json_encode($data),//http_build_query($data, "", "&"),
+        'content'   =>  $data,//http_build_query($data, "", "&"),
         'ignore_errors'=>true
         ));
     $context  = stream_context_create($options);
@@ -47,6 +76,8 @@ function put_http_request ($url, $header, $data) {
     } else {
         return $contents;
     }
+     * *
+     */
 }
 
 function execute_http ($url, $method, $header, $contents) {
