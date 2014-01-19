@@ -1,23 +1,30 @@
 <?php
 
 function post_http_request ($url, $header, $data) {
-    $options = array("http"=>array(
-        'method'    =>  'POST',
-        'header'    =>  implode("\r\n",$header),
-        'content'   =>  http_build_query($data, "", "&"),
-        'ignore_errors'=>true
-        ));
-    $context  = stream_context_create($options);
-    $contents = file_get_contents($url, false, $context);
-    if ($contents===FALSE) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if( $response === FALSE ) {
         return null;
     } else {
-        return $contents;
+        return $response;    
     }
 }
 
 function get_http_request ($url, $header, $data) {
-    $url = $url . '?' . http_build_query($data);
+    if (is_array($data)) {
+        $query = http_build_query($data);
+    } elseif(is_string($data)) {
+        $query = $data;
+    } else {
+        $query = '';
+    }
+    $url = $url . '?' . $query;
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
@@ -29,23 +36,6 @@ function get_http_request ($url, $header, $data) {
     } else {
         return $response;    
     }
-    /*
-    $options = array('http' =>
-        array(
-            'method' => 'GET',
-            'ignore_errors' => true,
-            'header'  => implode("\r\n", $header), 
-        )
-    );
-    $url = $url . '?' . http_build_query($data);
-    $contents = file_get_contents($url, false, stream_context_create($options));
-    if ($contents===FALSE) {
-        return null;
-    } else {
-        return $contents;        
-    }
-     * 
-     */
 }
 
 function put_http_request ($url, $header, $data) {
@@ -62,22 +52,6 @@ function put_http_request ($url, $header, $data) {
     } else {
         return $response;    
     }
-    /*
-    $options = array("http"=>array(
-        'method'    =>  'PUT',
-        'header'    =>  implode("\r\n",$header),
-        'content'   =>  $data,//http_build_query($data, "", "&"),
-        'ignore_errors'=>true
-        ));
-    $context  = stream_context_create($options);
-    $contents = file_get_contents($url, false, $context);
-    if ($contents===FALSE) {
-        return null;
-    } else {
-        return $contents;
-    }
-     * *
-     */
 }
 
 function execute_http ($url, $method, $header, $contents) {
