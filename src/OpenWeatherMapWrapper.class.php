@@ -126,4 +126,11 @@ class OpenWeatherMapWrapper {
         return self::$DIRECTION[round($degree / 22.5)];
     }
 
+    function kelvin_to_celsius($kelvin) {
+        return $kelvin - 272.15;
+    }
+     
+    function celsius_to_kelvin($celsius) {
+        return $celsius + 272.15;
+    }
 }
