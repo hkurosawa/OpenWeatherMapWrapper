@@ -1,5 +1,5 @@
 <?php
-require_once('/usr/lib/php/share/pear/PHPUnit/Framework/TestCase.php');
+//require_once('/usr/lib/php/share/pear/PHPUnit/Framework/TestCase.php');
 require_once('../src/OpenWeatherMapWrapper.class.php');
 
 class OpenWeatherMapWrapperTest extends PHPUnit_Framework_TestCase {
@@ -49,7 +49,10 @@ class OpenWeatherMapWrapperTest extends PHPUnit_Framework_TestCase {
     }
 
     public function test_search_history_by_city_id () {
-        $result = $this->owm->search_history_by_city_id(2643743, 1389280469);//London, 2014-01-09 15:14:29
+        $start = strtotime(date('Y-m-d 00:00:00', strtotime("-1 day")));//yesterday unixtime
+        echo $start;
+        $result = $this->owm->search_history_by_city_id(2643743, $start);//London, 2014-01-09 15:14:29
+        print json_encode($result);
         $this->assertGreaterThanOrEqual(1, $result->{'cnt'});
     }
 }

@@ -36,6 +36,7 @@ class OpenWeatherMapWrapper {
     public function search_city_by_coord($lon, $lat, $cnt = 1, $type = 'accurtate', $mode = 'json', $units = 'metric') {
         // build req header
         $header = array();
+        $header['Cache-Control'] = 'no-cache';
         if (!is_null($this->key)) {
             $header['x-api-key'] = $this->key;
         }
@@ -117,13 +118,14 @@ class OpenWeatherMapWrapper {
         if (!is_null($this->key)) {
             $header['x-api-key'] = $this->key;
         }
-        $weather_res = execute_http(URL_HISTORY, 'GET', $header, array('id' => $id, 'type' => 'hour', 'start' => $start_time));
+        $weather_res = execute_http(URL_HISTORY, 'GET', $header, 
+            array('id' => $id, 'type' => 'hour', 'start' => $start_time, 'end' => $start_time+3600));
         $weather_json = json_decode($weather_res);
         return $weather_json;
     }
 
     function degree_to_direction($degree) {
-        return self::$DIRECTION[round($degree / 22.5)];
+        return self::$DIRECTION[round($degree / 22.5)%16];
     }
 
     function kelvin_to_celsius($kelvin) {
